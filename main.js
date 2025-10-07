@@ -34,11 +34,11 @@ function renderHome() {
   app.innerHTML = `
     <div class="marquee">
       <div class="marquee-content">
-        WELCOME TO LAKEHOUSE.INK - ANONYMOUS DISCUSSION PLATFORM - NO REGISTRATION REQUIRED - POST FREELY - SHARE IDEAS - CONNECT ANONYMOUSLY
+       ✩₊˚.⋆☾⋆⁺₊✧ WELCOME TO MY VOICEMAIL PLEASE LEAVE A MESSAGE 谢谢 ( • ᴗ - ) ✧
       </div>
     </div>
     <div class="container">
-      <h1>lakehouse.ink</h1>
+      <h1>quinn.me</h1>
       <nav class="nav">
         <ul>
           <li><a href="/random" data-link>#random</a> - general purpose board</li>
