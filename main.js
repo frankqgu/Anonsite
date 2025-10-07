@@ -3,25 +3,24 @@ import { supabase } from './supabase.js';
 const app = document.getElementById('app');
 
 const routes = {
-  '/': renderHome,
-  '/random': renderRandom,
-  '/media': renderMedia,
-  '/promotions': renderPromotions,
-  '/docs': renderDocs
+  '': renderHome,
+  'random': renderRandom,
+  'media': renderMedia,
+  'promotions': renderPromotions,
+  'docs': renderDocs
 };
 
 function navigate(path) {
-  window.history.pushState({}, '', path);
-  router();
+  window.location.hash = path;
 }
 
 function router() {
-  const path = window.location.pathname;
-  const render = routes[path] || renderHome;
+  const hash = window.location.hash.slice(1) || '';
+  const render = routes[hash] || renderHome;
   render();
 }
 
-window.addEventListener('popstate', router);
+window.addEventListener('hashchange', router);
 
 document.addEventListener('click', (e) => {
   if (e.target.matches('[data-link]')) {
@@ -41,10 +40,10 @@ function renderHome() {
       <h1>quinn.me</h1>
       <nav class="nav">
         <ul>
-          <li><a href="/random" data-link>#random</a> - general purpose board</li>
-          <li><a href="/media" data-link>#media</a> - images and videos</li>
-          <li><a href="/promotions" data-link>#promotions</a> - promotional content</li>
-          <li><a href="/docs" data-link>#docs</a> - documentation</li>
+          <li><a href="#random" data-link>#random</a> - general purpose board</li>
+          <li><a href="#media" data-link>#media</a> - images and videos</li>
+          <li><a href="#promotions" data-link>#promotions</a> - promotional content</li>
+          <li><a href="#docs" data-link>#docs</a> - documentation</li>
         </ul>
       </nav>
     </div>
@@ -66,7 +65,7 @@ async function renderPromotions() {
 async function renderBoard(boardName, description, allowMedia = false, maxFileSizeMB = 0, requiresReview = false) {
   app.innerHTML = `
     <div class="container">
-      <a href="/" data-link class="back-link">← back to home</a>
+      <a href="#" data-link class="back-link">← back to home</a>
       <h1>#${boardName}</h1>
       <p class="board-description">${description}</p>
 
@@ -250,7 +249,7 @@ async function handlePostSubmit(boardName, requiresReview, allowMedia, maxFileSi
 function renderDocs() {
   app.innerHTML = `
     <div class="container">
-      <a href="/" data-link class="back-link">← back to home</a>
+      <a href="#" data-link class="back-link">← back to home</a>
       <h1>#docs</h1>
       <h2>API Documentation</h2>
       <p>This is an anonymous forum platform. No API is currently available.</p>
