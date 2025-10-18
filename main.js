@@ -11,7 +11,6 @@ function createCursorText(x, y) {
   text.textContent = cursorTexts[Math.floor(Math.random() * cursorTexts.length)];
   text.style.left = x + 'px';
   text.style.top = y + 'px';
-  text.style.color = `hsl(${Math.random() * 360}, 70%, 70%)`;
   document.body.appendChild(text);
 
   setTimeout(() => text.remove(), 1000);
@@ -27,14 +26,16 @@ document.addEventListener('mousemove', (e) => {
 });
 
 function createFallingText() {
+  const fallingContainer = document.getElementById('falling-container');
+  if (!fallingContainer) return;
+
   const text = document.createElement('div');
   text.className = 'falling-text';
   text.textContent = fallingTexts[Math.floor(Math.random() * fallingTexts.length)];
   text.style.left = Math.random() * 100 + '%';
-  text.style.color = `hsl(${Math.random() * 360}, 70%, 70%)`;
   text.style.animationDuration = (3 + Math.random() * 4) + 's';
   text.style.fontSize = (12 + Math.random() * 12) + 'px';
-  document.body.appendChild(text);
+  fallingContainer.appendChild(text);
 
   setTimeout(() => text.remove(), 8000);
 }
