@@ -321,3 +321,28 @@ select:focus {
     font-size: 18px;
   }
 }
+
+/* Style for the social label badge in #contacts */
+.post-status {
+  display: inline-block;
+  /* Make it a small badge */
+  background: #ffd6f3;
+  /* Light pink background */
+  color: #000;
+  /* Black text */
+  padding: 2px 6px;
+  /* Small padding */
+  border-radius: 6px;
+  /* Rounded corners */
+  font-size: 0.85rem;
+  /* Slightly smaller text */
+  text-decoration: none;
+  /* Remove underline for links */
+  margin-left: 8px;
+  /* Space from username/date */
+}
+
+.post-status:hover {
+  background: #ffb6e0;
+  /* Slightly darker pink on hover */
+}

@@ -6,8 +6,8 @@ const routes = {
   '': renderHome,
   'random': renderRandom,
   'media': renderMedia,
-  'promotions': renderPromotions,
-  'docs': renderDocs
+  'contacts': renderContacts,
+  'me': renderMe
 };
 
 function navigate(path) {
@@ -40,10 +40,10 @@ function renderHome() {
       <h1>quinn.me</h1>
       <nav class="nav">
         <ul>
-          <li><a href="#random" data-link>#random</a> - general purpose board</li>
-          <li><a href="#media" data-link>#media</a> - images and videos</li>
-          <li><a href="#promotions" data-link>#promotions</a> - promotional content</li>
-          <li><a href="#docs" data-link>#docs</a> - documentation</li>
+          <li><a href="#random" data-link>#random</a> - #general</li>
+          <li><a href="#media" data-link>#media</a> - imgs and vids</li>
+          <li><a href="#contacts" data-link>#contacts</a> - if u want oomfs</li>
+          <li><a href="#me" data-link>#me</a> - stalk me</li>
         </ul>
       </nav>
     </div>
@@ -51,15 +51,15 @@ function renderHome() {
 }
 
 async function renderRandom() {
-  renderBoard('random', 'A general purpose board for discussions');
+  renderBoard('random', 'hey guys keep memes out of #general');
 }
 
 async function renderMedia() {
   renderBoard('media', 'A board for sharing images and videos', true, 10);
 }
 
-async function renderPromotions() {
-  renderBoard('promotions', 'A curated board for sharing projects - posts are subject to review', true, 10, true);
+async function renderContacts() {
+  renderBoard('contacts', 'Drop ur handle and an intro if u want', true, 10, false);
 }
 
 async function renderBoard(boardName, description, allowMedia = false, maxFileSizeMB = 0, requiresReview = false) {
@@ -76,8 +76,19 @@ async function renderBoard(boardName, description, allowMedia = false, maxFileSi
         </div>
         <div class="form-group">
           <label for="content">Message</label>
-          <textarea id="content" required placeholder="Your message..."></textarea>
+          <textarea id="content" required placeholder="Type your comment here... Use [b]bold[/b], [i]italic[/i], and [s] strikethrough [/s]."></textarea>
         </div>
+        ${boardName === 'contacts' ? `
+          <div class="form-group">
+            <label for="social-label">Label (e.g., Twitter, IG, Discord)</label>
+            <input type="text" id="social-label" placeholder="Social label (optional)">
+          </div>
+          <div class="form-group">
+            <label for="social-link">Link to profile</label>
+            <input type="url" id="social-link" placeholder="https://example.com/yourprofile">
+          </div>
+          ` : ''}
+        
         ${allowMedia ? `
         <div class="form-group">
           <label for="media">Upload Media (Max ${maxFileSizeMB}MB)</label>
@@ -155,8 +166,16 @@ async function renderBoard(boardName, description, allowMedia = false, maxFileSi
 function renderPost(post, showTags) {
   const date = new Date(post.created_at).toLocaleString();
   const username = post.username || 'Anonymous';
-  const statusBadge = post.status === 'pending' ? '<span class="post-status status-pending">PENDING REVIEW</span>' :
-                      post.status === 'approved' ? '<span class="post-status status-approved">APPROVED</span>' : '';
+  let statusBadge = '';
+  
+  //if (post.status === 'pending' && post.board === 'contacts') {
+  //  statusBadge = '<span class="post-status status-pending">PENDING REVIEW</span>';
+  //} else if (post.status === 'approved' && post.board === 'contacts') {
+  //  statusBadge = '<span class="post-status status-approved">APPROVED</span>';
+  //} on pause rn
+  if (post.board === 'contacts' && post.social_label && post.social_link) {
+    statusBadge = `<a href="${post.social_link}" class="post-status" target="_blank" rel="noopener noreferrer">${escapeHtml(post.social_label)}</a>`;
+  }
 
   let mediaHtml = '';
   if (post.media_url) {
@@ -184,6 +203,16 @@ async function handlePostSubmit(boardName, requiresReview, allowMedia, maxFileSi
   const username = document.getElementById('username').value.trim() || 'Anonymous';
   const content = document.getElementById('content').value.trim();
   const mediaInput = document.getElementById('media');
+  // --- Social label/link inputs for #contacts ---
+  let socialLabel = '';
+  let socialLink = '';
+
+  if (boardName === 'contacts') {
+    socialLabel = document.getElementById('social-label').value.trim();
+    socialLink = document.getElementById('social-link').value.trim();
+  }
+  // --------------------------------------------
+
 
   if (!content) return;
 
@@ -223,7 +252,9 @@ async function handlePostSubmit(boardName, requiresReview, allowMedia, maxFileSi
       username,
       content,
       media_url: mediaUrl,
-      status: requiresReview ? 'pending' : 'approved'
+      status: requiresReview ? 'pending' : 'approved',
+      social_label: socialLabel || null,
+      social_link: socialLink || null
     };
 
     const { error } = await supabase
@@ -246,21 +277,18 @@ async function handlePostSubmit(boardName, requiresReview, allowMedia, maxFileSi
   }
 }
 
-function renderDocs() {
+function renderMe() {
   app.innerHTML = `
     <div class="container">
       <a href="#" data-link class="back-link">← back to home</a>
-      <h1>#docs</h1>
-      <h2>API Documentation</h2>
-      <p>This is an anonymous forum platform. No API is currently available.</p>
+      <h1>#me</h1>
+      <h2>Hi</h2>
+      <p>@qindgaf</p>
       <br>
-      <h3>Features:</h3>
+      <h3>WIP</h3>
       <ul style="margin-left: 20px; line-height: 2;">
-        <li>Anonymous posting without registration</li>
-        <li>Multiple boards for different types of content</li>
-        <li>Media upload support on #media and #promotions</li>
-        <li>Moderation queue for #promotions board</li>
-        <li>Real-time updates and sorting options</li>
+        <li>feel free to req if we've talked @xiexiejiemei</li>
+
       </ul>
     </div>
   `;
@@ -275,9 +303,18 @@ function setShowTags(value) {
 }
 
 function escapeHtml(text) {
+  // First, escape all HTML to prevent script injection
   const div = document.createElement('div');
   div.textContent = text;
-  return div.innerHTML;
+  let escaped = div.innerHTML;
+
+  // Then, safely replace BBCode-style tags with HTML equivalents
+  escaped = escaped
+    .replace(/\[b\](.*?)\[\/b\]/gi, '<strong>$1</strong>')
+    .replace(/\[i\](.*?)\[\/i\]/gi, '<em>$1</em>')
+    .replace(/\[s\](.*?)\[\/s\]/gi, '<s>$1</s>');
+
+  return escaped;
 }
 
 router();
