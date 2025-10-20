@@ -1,9 +1,12 @@
 import { supabase } from './supabase.js';
+import { ParallaxManager } from './parallax.js';
 
 const app = document.getElementById('app');
 
 const cursorTexts = ['✧', '★', '♡', '☆', '✦', '◇', '○', '●', '△', '▽', 'uwu', 'hi', '(◕‿◕)', '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', '♪', '♫'];
 const fallingTexts = ['✧', '★', '♡', '☆', '✦', '◇', '○', '●', '△', '▽', '♪', '♫', '~', '•', '◆', '◈'];
+
+let parallaxManager = null;
 
 function createCursorText(x, y) {
   const text = document.createElement('div');
@@ -26,6 +29,9 @@ document.addEventListener('mousemove', (e) => {
 });
 
 function createFallingText() {
+  const hash = window.location.hash.slice(1) || '';
+  if (hash === 'me') return;
+
   const fallingContainer = document.getElementById('falling-container');
   if (!fallingContainer) return;
 
@@ -55,6 +61,11 @@ function navigate(path) {
 }
 
 function router() {
+  if (parallaxManager && window.location.hash.slice(1) !== 'me') {
+    parallaxManager.destroy();
+    parallaxManager = null;
+  }
+
   const hash = window.location.hash.slice(1) || '';
   const render = routes[hash] || renderHome;
   render();
@@ -318,8 +329,12 @@ async function handlePostSubmit(boardName, requiresReview, allowMedia, maxFileSi
 }
 
 function renderMe() {
+  if (parallaxManager) {
+    parallaxManager.destroy();
+  }
+
   app.innerHTML = `
-    <div class="container">
+    <div class="me-content-box">
       <a href="#" data-link class="back-link">← back to home</a>
       <h1>#me</h1>
       <h2>Hi</h2>
@@ -332,6 +347,9 @@ function renderMe() {
       </ul>
     </div>
   `;
+
+  parallaxManager = new ParallaxManager();
+  parallaxManager.init();
 }
 
 function getShowTags() {
