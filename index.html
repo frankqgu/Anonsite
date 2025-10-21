@@ -1,14 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>all roads lead to quinn</title>
-  <script type="module" crossorigin src="/assets/index-sVmZnjmb.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-JPuDXV5x.css">
+  <link rel="stylesheet" href="/parallax.css" />
+
+  <style>
+    /* Blank background for #me section */
+    .me-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      background: linear-gradient(to bottom, #000 0%, #010814 100%);
+      display: none;
+      /* hidden unless #me active */
+    }
+
+    .me-bg.active {
+      display: block;
+    }
+
+    #app {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Heart canvas styling */
+    #heart-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-BrWZ2EDz.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-yVJNMwLr.css">
 </head>
+
 <body>
+  <!-- Blank Background (no rain / no clouds) -->
+  <div class="me-bg" id="me-bg">
+    <canvas id="heart-canvas"></canvas>
+  </div>
+
+  <!-- Main App -->
   <div id="app"></div>
-  <div id="falling-container"></div>
+  <div id="falling-container"></div>
+
+
+  <script>
+    // Handle showing the me-bg based on URL hash
+    const meBg = document.getElementById('me-bg');
+
+    function checkHash() {
+      if (window.location.hash === '#me') {
+        meBg.classList.add('active');
+        initHearts();
+        animate();
+      } else {
+        meBg.classList.remove('active');
+      }
+    }
+
+    window.addEventListener('hashchange', checkHash);
+    window.addEventListener('load', checkHash);
+  </script>
+
+  <script>
+    // Heart Animation Script
+    const canvas = document.getElementById('heart-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    let hearts = [];
+    const heartCount = 80;
+    const repelRadius = 100;
+    let animationRunning = false;
+
+    let mouse = { x: null, y: null };
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    window.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseout', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    class Heart {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = 14 + Math.random() * 10;
+        this.baseX = this.x;
+        this.baseY = this.y;
+      }
+
+      draw() {
+        ctx.font = `${this.size}px serif`;
+        ctx.fillStyle = 'rgba(255, 160, 180, 0.8)';
+        ctx.fillText('♡', this.x, this.y);
+      }
+
+      update() {
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < repelRadius) {
+            const force = (repelRadius - dist) / repelRadius;
+            const angle = Math.atan2(dy, dx);
+            const moveX = Math.cos(angle) * force * 10;
+            const moveY = Math.sin(angle) * force * 10;
+
+            this.x += moveX;
+            this.y += moveY;
+          } else {
+            this.x += (this.baseX - this.x) * 0.02;
+            this.y += (this.baseY - this.y) * 0.02;
+          }
+        }
+      }
+    }
+
+    function initHearts() {
+      hearts = [];
+      for (let i = 0; i < heartCount; i++) {
+        hearts.push(new Heart());
+      }
+    }
+
+    function animate() {
+      if (!animationRunning) {
+        animationRunning = true;
+
+        function loop() {
+          if (!document.getElementById('me-bg').classList.contains('active')) {
+            animationRunning = false;
+            return;
+          }
+
+          ctx.clearRect(0, 0, width, height);
+          for (let heart of hearts) {
+            heart.update();
+            heart.draw();
+          }
+          requestAnimationFrame(loop);
+        }
+
+        loop();
+      }
+    }
+  </script>
 </body>
+
 </html>
