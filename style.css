@@ -1,3 +1,6 @@
+/* ================================================
+   RESET & BASE
+=================================================*/
 * {
   margin: 0;
   padding: 0;
@@ -22,6 +25,9 @@ body {
   max-width: 800px;
 }
 
+/* ================================================
+   CONTAINERS, TEXT, NAV
+=================================================*/
 .container {
   border: 2px dashed #444;
   padding: 30px;
@@ -46,8 +52,13 @@ body {
 }
 
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 h1 {
@@ -95,6 +106,9 @@ h3 {
   transform: translateX(5px);
 }
 
+/* ================================================
+   BOARD & POSTS
+=================================================*/
 .board-description {
   color: #888;
   font-size: 16px;
@@ -249,11 +263,6 @@ input[type="checkbox"] {
   align-items: center;
 }
 
-.sort-controls label {
-  display: inline;
-  margin: 0;
-}
-
 select {
   background-color: #111;
   color: #fff;
@@ -304,49 +313,9 @@ select:focus {
   color: #f0e68c;
 }
 
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .container {
-    padding: 15px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  .nav a {
-    font-size: 18px;
-  }
-}
-
-/* Style for the social label badge in #contacts */
-.post-status {
-  display: inline-block;
-  /* Make it a small badge */
-  background: #ffd6f3;
-  /* Light pink background */
-  color: #000;
-  /* Black text */
-  padding: 2px 6px;
-  /* Small padding */
-  border-radius: 6px;
-  /* Rounded corners */
-  font-size: 0.85rem;
-  /* Slightly smaller text */
-  text-decoration: none;
-  /* Remove underline for links */
-  margin-left: 8px;
-  /* Space from username/date */
-}
-
-.post-status:hover {
-  background: #ffb6e0;
-  /* Slightly darker pink on hover */
-}
-
+/* ================================================
+   CURSOR & FALLING SYMBOL EFFECTS
+=================================================*/
 .cursor-text {
   position: absolute;
   pointer-events: none;
@@ -362,12 +331,11 @@ select:focus {
     opacity: 1;
     transform: translate(0, 0) scale(1);
   }
+
   100% {
     opacity: 0;
-    transform: translate(
-      calc(-20px + (40px * var(--random, 0.5))),
-      calc(-40px - (20px * var(--random, 0.5)))
-    ) scale(0.5);
+    transform: translate(calc(-20px + (40px * var(--random, 0.5))),
+        calc(-40px - (20px * var(--random, 0.5)))) scale(0.5);
   }
 }
 
@@ -396,11 +364,136 @@ select:focus {
     bottom: 100%;
     opacity: 1;
   }
+
   80% {
     opacity: 1;
   }
+
   100% {
     bottom: -50px;
     opacity: 0;
   }
+}
+
+/* ================================================
+   PARALLAX / LEGACY BACKGROUND LAYERS
+=================================================*/
+.parallax-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+  pointer-events: none;
+  z-index: 1;
+  color: #88aaff;
+  background: transparent;
+}
+
+.parallax-scene {
+  display: none;
+  width: 100%;
+  height: 100%;
+  white-space: pre;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.25;
+}
+
+.parallax-scene.active {
+  display: block;
+}
+
+.parallax-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  white-space: pre;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  animation: drift 10s linear infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-20px);
+  }
+}
+
+.parallax-layer-back {
+  opacity: 0.2;
+}
+
+.parallax-layer-mid {
+  opacity: 0.5;
+}
+
+.parallax-layer-front {
+  opacity: 0.8;
+}
+
+.parallax-nav {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.parallax-dot {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+.parallax-dot.active {
+  opacity: 1;
+  background: white;
+}
+
+/* ================================================
+   ASCII CLOUD + RAIN WALLPAPER (#me only)
+=================================================*/
+#ascii-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: monospace;
+  color: #99bbff;
+  font-size: 2vw;
+  line-height: 1;
+  white-space: pre;
+  background: #000;
+  z-index: 0;
+  pointer-events: none;
+  display: none;
+  /* only shown on #me */
+}
+
+.me-content-box {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 800px;
+  margin: 100px auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
 }
