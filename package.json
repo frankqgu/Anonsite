@@ -1,7 +1,7 @@
 {
   "name": "project",
   "version": "1.0.0",
-  "description": "",
+  "description": "bolt\r npm run build\r git add .\r git commit -m \"Deploy\"",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
@@ -18,5 +18,13 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankqgu/Anonsite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frankqgu/Anonsite/issues"
+  },
+  "homepage": "https://github.com/frankqgu/Anonsite#readme"
 }
