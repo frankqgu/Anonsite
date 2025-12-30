@@ -123,10 +123,11 @@ ${k}`}ni();const hi={url:_r,storageKey:mr,autoRefreshToken:!0,persistSession:!0,
       <ul style="margin-left: 20px; line-height: 2;">
         <li>21</li>
         <li>cn</li>
-        <li>they/wtv</li>
-        <li>i</li>
-        <li>d</li>
-        <li>k</li>
+        <li>they/she/wtv</li>
+        <li>games:league valorant overwatch cs2 nightreign ff7 p5 <br> currently expedition 33 baldurs gate</li>
+        <li>likes:ug rap brainrot basketball peripherals web stuff stein gate pokemon 86 psycho pass chinese history
+        <br> used to piano trying to draw more</li>
+        <li>estrogen est 7/25/25</li>
       </ul>
     </div>
   `,es()}const ae=document.getElementById("heart-canvas"),J=ae?.getContext("2d");let et,tt,Je=[];const Ti=80,Re=100;let Le=!1,M={x:null,y:null};function Zt(){ae&&(et=ae.width=window.innerWidth,tt=ae.height=window.innerHeight)}window.addEventListener("resize",Zt);Zt();window.addEventListener("mousemove",n=>{M.x=n.clientX,M.y=n.clientY});window.addEventListener("mouseout",()=>{M.x=null,M.y=null});class Oi{constructor(){this.reset()}reset(){this.x=Math.random()*et,this.y=Math.random()*tt,this.size=14+Math.random()*10,this.baseX=this.x,this.baseY=this.y}draw(){J&&(J.font=`${this.size}px serif`,J.fillStyle="rgba(255,160,180,0.8)",J.fillText("♡",this.x,this.y))}update(){if(M.x===null||M.y===null){this.x+=(this.baseX-this.x)*.02,this.y+=(this.baseY-this.y)*.02;return}const e=this.x-M.x,t=this.y-M.y,s=Math.sqrt(e*e+t*t);if(s<Re){const r=(Re-s)/Re,i=Math.atan2(t,e);this.x+=Math.cos(i)*r*10,this.y+=Math.sin(i)*r*10}else this.x+=(this.baseX-this.x)*.02,this.y+=(this.baseY-this.y)*.02}}function es(){if(!(!ae||!J)){Je=[];for(let n=0;n<Ti;n++)Je.push(new Oi);ji()}}function ji(){!ae||!J||Le||(Le=!0,(function n(){if(!document.getElementById("me-bg")?.classList.contains("active")){Le=!1;return}J.clearRect(0,0,et,tt);for(const t of Je)t.update(),t.draw();requestAnimationFrame(n)})())}function ts(){const n=document.getElementById("me-bg");n&&(window.location.hash==="#me"?(n.classList.add("active"),es()):n.classList.remove("active"))}const Ai={"":Ct,random:yi,media:bi,contacts:ki,me:Ei};function Pi(n){window.location.hash=n}function ss(){const n=window.location.hash.slice(1)||"",e=Ai[n]||Ct,t=document.getElementById("ascii-bg");t&&(t.style.display=n==="me"?"block":"none"),e()}document.getElementById("app");rs();os();ss();window.addEventListener("hashchange",ss);window.addEventListener("click",n=>{n.target.matches("[data-link]")&&(n.preventDefault(),Pi(n.target.getAttribute("href")))});window.addEventListener("hashchange",ts);window.addEventListener("load",ts);
