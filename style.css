@@ -32,6 +32,12 @@ body {
   border: 2px dashed #444;
   padding: 30px;
   background-color: #000;
+
+  position: relative;
+  /* ⬅ REQUIRED */
+  z-index: 20;
+  /* ⬅ ABOVE falling text */
+
   box-shadow: 0 0 20px rgba(136, 170, 255, 0.3);
 }
 
@@ -339,25 +345,6 @@ select:focus {
   }
 }
 
-#falling-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  pointer-events: none;
-  z-index: 9998;
-  overflow: hidden;
-}
-
-.falling-text {
-  position: absolute;
-  bottom: 100%;
-  pointer-events: none;
-  font-weight: bold;
-  color: #fff;
-  animation: fall linear forwards;
-}
 
 @keyframes fall {
   0% {
@@ -387,7 +374,7 @@ select:focus {
   overflow: hidden;
   font-family: 'Courier New', monospace;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0;
   color: #88aaff;
   background: transparent;
 }
@@ -451,6 +438,26 @@ select:focus {
   pointer-events: auto;
 }
 
+
+.post-media {
+  display: block;
+  max-width: 100%;
+  max-height: 500px;
+  margin: 15px 0;
+  border: 1px solid #444;
+  border-radius: 6px;
+}
+
+
+.post {
+  position: relative;
+  z-index: 6;
+}
+
+.cursor-text {
+  position: fixed;
+}
+
 .parallax-dot {
   width: 10px;
   height: 10px;
@@ -497,4 +504,256 @@ select:focus {
   background: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   backdrop-filter: blur(3px);
+}
+/* ================================================
+   #me photo editor layer
+================================================ */
+
+.me-editor {
+  position: relative;
+  width: min(1100px, 92vw);
+  height: min(650px, 70vh);
+  margin: 30px auto 0;
+  border: 1px dashed #333;
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* each draggable/resizable/rotatable item */
+.me-item {
+  position: absolute;
+  left: 80px;
+  top: 80px;
+  width: 220px;
+  height: 160px;
+  transform-origin: center center;
+  user-select: none;
+  touch-action: none;
+  /* important for pointer events on mobile */
+}
+
+.me-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+  border: 1px solid #222;
+}
+
+/* selection outline */
+.me-item.selected::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(136, 170, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6) inset;
+  pointer-events: none;
+}
+
+/* resize handles */
+.me-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(136, 170, 255, 1);
+  border: 1px solid #000;
+  border-radius: 2px;
+  z-index: 5;
+}
+
+.me-handle.nw {
+  left: -6px;
+  top: -6px;
+  cursor: nwse-resize;
+}
+
+.me-handle.n {
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.me-handle.ne {
+  right: -6px;
+  top: -6px;
+  cursor: nesw-resize;
+}
+
+.me-handle.e {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.me-handle.se {
+  right: -6px;
+  bottom: -6px;
+  cursor: nwse-resize;
+}
+
+.me-handle.s {
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.me-handle.sw {
+  left: -6px;
+  bottom: -6px;
+  cursor: nesw-resize;
+}
+
+.me-handle.w {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+/* rotate handle */
+.me-rotate {
+  position: absolute;
+  left: 50%;
+  top: -34px;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: rgba(240, 230, 140, 0.95);
+  border: 1px solid #000;
+  border-radius: 50%;
+  cursor: grab;
+  z-index: 6;
+}
+
+.me-rotate::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  background: rgba(240, 230, 140, 0.95);
+}
+/* ================================================
+   LAYERING OVERRIDES (KEEP AT BOTTOM)
+   Fixes marquee being behind falling text
+================================================ */
+
+/* Falling symbols are behind everything */
+#falling-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Each falling glyph stays behind content */
+.falling-text {
+  position: absolute;
+  pointer-events: none;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.8);
+  animation: fall linear forwards;
+  z-index: 0;
+}
+
+/* The app UI is above falling */
+#app {
+  position: relative;
+  z-index: 50;
+}
+
+/* The marquee + its animated (transform) text MUST be above falling */
+.marquee {
+  position: relative;
+  z-index: 1000;
+  isolation: isolate;
+  /* prevents transform stacking weirdness */
+}
+
+.marquee-content {
+  position: relative;
+  z-index: 1001;
+}
+
+/* create a clean stacking context so z-index behaves predictably */
+body {
+  position: relative;
+  isolation: isolate;
+}
+
+/* effects at the very back */
+#falling-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.falling-text {
+  z-index: 0;
+}
+
+/* app above effects */
+#app {
+  position: relative;
+  z-index: 50;
+}
+
+/* marquee above everything in app */
+.marquee {
+  position: relative;
+  z-index: 1000;
+  background: #000;
+  /* prevents “seeing through” */
+}
+
+.marquee-content {
+  position: relative;
+  z-index: 1001;
+}
+
+/* ================================================
+   #me full-page editor canvas + overlay text
+================================================ */
+
+.me-stage {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 40px);
+  /* body has padding */
+}
+
+/* The draggable canvas fills the page area */
+.me-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+/* Overlay text sits on top */
+.me-overlay {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 10px;
+  backdrop-filter: blur(3px);
+}
+
+/* Optional: keep your original me-content-box name working too */
+.me-content-box {
+  display: none;
 }

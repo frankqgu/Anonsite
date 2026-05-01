@@ -1,105 +1,67 @@
-export function renderMe() {
-  const app = document.getElementById('app');
+import { initMeEditor, makeMeItem } from "./me-editor.js";
 
-  let ascii = document.getElementById('ascii-bg');
+export function renderMe() {
+  const app = document.getElementById("app");
+
+  // keep your ascii-bg behavior if you still want it (optional)
+  let ascii = document.getElementById("ascii-bg");
   if (!ascii) {
-    ascii = document.createElement('pre');
-    ascii.id = 'ascii-bg';
+    ascii = document.createElement("pre");
+    ascii.id = "ascii-bg";
     document.body.appendChild(ascii);
   }
-  ascii.style.display = 'block';
+  ascii.style.display = "block";
 
+  // FULL PAGE editor canvas + text overlay
   app.innerHTML = `
-    <div class="me-content-box">
-      <a href="#" data-link class="back-link">← back to home</a>
-      <h1>#me</h1>
-      <h2>Hi</h2>
-      <p>@qindgaf</p>
-      <br>
-      <h3>quinn/qing</h3>
-      <ul style="margin-left: 20px; line-height: 2;">
-        <li>21</li>
-        <li>cn</li>
-        <li>they/wtv</li>
-        <li>i</li>
-        <li>d</li>
-        <li>k</li>
-      </ul>
+    <div class="me-stage" id="me-stage">
+      <div class="me-canvas" id="me-editor"></div>
+
+      <div class="me-overlay">
+        <a href="#" data-link class="back-link">← back to home</a>
+        <h1>#me</h1>
+        <h2>Hi</h2>
+        <p>@xiexiejiemei</p>
+        <br>
+        <h3>quinn/qing</h3>
+        <ul style="margin-left: 20px; line-height: 2;">
+          <li>21</li>
+          <li>cn/eng</li>
+          <li>any</li>
+          <li>games:league valorant overwatch cs2 nightreign ff7 p5 expedition33, re9
+          currently metaphor</li>
+          <li>likes:lpl(blg tes), firefly, GSWarriors, aespa, stein gate, Kino Tabi, FATE nasuverse, angel beats </li>
+          <li>e 7/25/25</li>
+        </ul>
+
+        <p style="margin-top:10px; color:#777; font-size:14px;">
+          1/5/26</b>
+        </p>
+      </div>
     </div>
   `;
 
-  initHearts();
-}
+  const editor = document.getElementById("me-editor");
+  if (editor) {
+    initMeEditor(editor);
 
-// ------------------------
-// Hearts animation only
-// ------------------------
-const canvas = document.getElementById('heart-canvas');
-const ctx = canvas?.getContext('2d');
-let width, height;
-let hearts = [];
-const heartCount = 80;
-const repelRadius = 100;
-let animationRunning = false;
-let mouse = { x: null, y: null };
-
-function resizeCanvas() {
-  if (!canvas) return;
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
-
-class Heart {
-  constructor() { this.reset(); }
-  reset() { this.x = Math.random() * width; this.y = Math.random() * height; this.size = 14 + Math.random() * 10; this.baseX = this.x; this.baseY = this.y; }
-  draw() { if (!ctx) return; ctx.font = `${this.size}px serif`; ctx.fillStyle = 'rgba(255,160,180,0.8)'; ctx.fillText('♡', this.x, this.y); }
-  update() {
-    if (mouse.x === null || mouse.y === null) { this.x += (this.baseX - this.x) * 0.02; this.y += (this.baseY - this.y) * 0.02; return; }
-    const dx = this.x - mouse.x, dy = this.y - mouse.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < repelRadius) {
-      const force = (repelRadius - dist) / repelRadius;
-      const angle = Math.atan2(dy, dx);
-      this.x += Math.cos(angle) * force * 10;
-      this.y += Math.sin(angle) * force * 10;
-    } else {
-      this.x += (this.baseX - this.x) * 0.02;
-      this.y += (this.baseY - this.y) * 0.02;
-    }
+    // Add your images (put them in /public/imgs/)
+    editor.appendChild(makeMeItem("/imgs/aerith.jpg", 1500, 350, 100, 250));
+    editor.appendChild(makeMeItem("/imgs/kda.jpg", 150, 100, 300, 250));
+    editor.appendChild(makeMeItem("/imgs/akiangel.jpg", 50, 660, 250, 300));
+    editor.appendChild(makeMeItem("/imgs/lasttour.jpg", 1500, 100, 250, 150));
+    editor.appendChild(makeMeItem("/imgs/lucario.jpg", 300, 420, 250, 250));
+    editor.appendChild(makeMeItem("/imgs/sinon.jpg", 700, 720, 250, 250));
+    editor.appendChild(makeMeItem("/imgs/ganyu.jpg", 1400, 620, 300, 300));
+    editor.appendChild(makeMeItem("/imgs/kinos.jpg", 1000, 640, 300, 300));
+    editor.appendChild(makeMeItem("/imgs/frank.jpg", 400, 740, 200, 300));
+    editor.appendChild(makeMeItem("/imgs/yunara.jpg", 1800, 820, 200, 200));
   }
-}
-
-function initHearts() {
-  if (!canvas || !ctx) return;
-  hearts = [];
-  for (let i = 0; i < heartCount; i++) hearts.push(new Heart());
-  animateHearts();
-}
-
-function animateHearts() {
-  if (!canvas || !ctx || animationRunning) return;
-  animationRunning = true;
-  (function loop() {
-    const meBg = document.getElementById('me-bg');
-    if (!meBg?.classList.contains('active')) { animationRunning = false; return; }
-    ctx.clearRect(0, 0, width, height);
-    for (const h of hearts) { h.update(); h.draw(); }
-    requestAnimationFrame(loop);
-  })();
 }
 
 export function checkHash() {
-  const meBg = document.getElementById('me-bg');
-  if (!meBg) return;
-  if (window.location.hash === '#me') {
-    meBg.classList.add('active');
-    initHearts();
-  } else {
-    meBg.classList.remove('active');
-  }
+  // just show/hide ascii bg on route
+  const ascii = document.getElementById("ascii-bg");
+  if (!ascii) return;
+  ascii.style.display = window.location.hash === "#me" ? "block" : "none";
 }

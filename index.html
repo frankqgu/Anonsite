@@ -47,12 +47,14 @@
     <canvas id="heart-canvas"></canvas>
   </div>
 
-  <!-- Main App -->
-  <div id="app"></div>
+  <!-- Effects layer (must NOT be inside #app because app.innerHTML wipes it) -->
   <div id="falling-container"></div>
 
-  <!-- Load the unified JS (routing + animations) -->
+  <!-- Main App -->
+  <div id="app"></div>
+
   <script type="module" src="/main.js"></script>
 </body>
+
 
 </html>
