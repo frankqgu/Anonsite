@@ -132,16 +132,16 @@ ${S}`}nn();const hn={url:wr,storageKey:_r,autoRefreshToken:!0,persistSession:!0,
         <a href="#" data-link class="back-link">← back to home</a>
         <h1>#me</h1>
         <h2>Hi</h2>
-        <p>@xiexiejiemei</p>
+        <p>@quingxo</p>
         <br>
         <h3>quinn/qing</h3>
         <ul style="margin-left: 20px; line-height: 2;">
           <li>21</li>
           <li>cn/eng</li>
           <li>any</li>
-          <li>games:league valorant overwatch cs2 nightreign ff7 p5 expedition33, re9
+          <li>games:star rail league valorant overwatch cs2 nightreign ff7 p5 expedition33, re9, gd
           currently metaphor</li>
-          <li>likes:lpl(blg tes), firefly, GSWarriors, aespa, stein gate, Kino Tabi, FATE nasuverse, angel beats </li>
+          <li>likes:lpl(blg tes), firefly, lancer (both), saber, aespa, yunara, akalim, Kino Tabi, FATE, angel beats, Witch Ranni</li>
           <li>e 7/25/25</li>
         </ul>
 
